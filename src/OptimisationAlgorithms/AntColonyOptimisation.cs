@@ -4,14 +4,8 @@ namespace AlgoBenchmark
 {
     class AntColonyOptimizationAlgorithm : OptimizationAlgorithm
     {
-        // Number of unknown parameters
-        int n = 1;
-
         // Number of ants in population
         int M = 100;
-
-        // Number of iterations
-        int I = 100;
 
         // Number of pheromone spots
         int L = 10;
@@ -26,7 +20,7 @@ namespace AlgoBenchmark
             get => "Ant Colony Optimization Algorithm";
         }
 
-        public double Solve(TargetFunctionType TargetFunction)
+        public double Solve(MinimizedFunction minimizedFunction, int iterations)
         {
             // Pheromone spots
             var T = new PheromoneSpot[L + M];
@@ -34,20 +28,20 @@ namespace AlgoBenchmark
 
             for (int i = 0; i < L + M; i++)
             {
-                T[i].x = new double[n];
+                T[i].x = new double[minimizedFunction.UnknownParametersNumber];
 
-                for (int j = 0; j < n; j++)
+                for (int j = 0; j < minimizedFunction.UnknownParametersNumber; j++)
                 {
-                    T[i].x[j] = rnd.NextDouble() * rnd.NextInt64();
+                    T[i].x[j] = minimizedFunction.MinCoordinateVal + rnd.NextDouble() * (minimizedFunction.MaxCoordinateVal - minimizedFunction.MinCoordinateVal);
                 }
             }
 
 
-            for (int a = 0; a < I; a++)
+            for (int a = 0; a < iterations; a++)
             {
                 for (int i = 0; i < L + M; i++)
                 {
-                    T[i].result = TargetFunction(T[i].x);
+                    T[i].result = minimizedFunction.TargetFunction(T[i].x);
                 }
 
                 Array.Sort(T, (a, b) => a.result.CompareTo(b.result));
@@ -84,7 +78,7 @@ namespace AlgoBenchmark
                         }
                     }
 
-                    for (int j = 0; j < n; j++)
+                    for (int j = 0; j < minimizedFunction.UnknownParametersNumber; j++)
                     {
                         // μ
                         double mu = T[spot_index].x[j];
@@ -97,7 +91,14 @@ namespace AlgoBenchmark
                         }
                         sigma *= ksi / (L - 1);
 
-                        T[L + i].x[j] = Normal.Sample(mu, sigma);
+                        double num = Normal.Sample(mu, sigma);
+
+                        if (num < minimizedFunction.MinCoordinateVal)
+                            num = minimizedFunction.MinCoordinateVal;
+                        else if (num > minimizedFunction.MaxCoordinateVal)
+                            num = minimizedFunction.MaxCoordinateVal;
+
+                        T[L + i].x[j] = num;
                     }
 
 
@@ -116,10 +117,10 @@ namespace AlgoBenchmark
     {
         public double result;
 
-        // Array with n parameters that are passed to TargetFunction
+        // Array with parameters that are passed to TargetFunction
         public double[] x;
 
-        // Probability that ant will choose that spot
+        // Probability that an ant will choose this spot
         public double p;
     }
 }

@@ -1,28 +1,55 @@
+using System.IO;
+
 namespace AlgoBenchmark
 {
-    public delegate double TargetFunctionType(double[] args);
-
     class Program
     {
         public static void Main(string[] args)
         {
-            var functions = MinimizedFunction.GetMinimizedFunctions();
+            var numberOfIterations = 100;
             var algorithms = OptimizationAlgorithm.GetOptimisationAlgorithms();
 
-            foreach (var function in functions)
+            var file = GetFile();
+            file.WriteLine("Minimized function, Optimization algorithm, Number of iterations, Number of unknown parameters, Result, Time[ms]");
+
+            for (int unknownParametersNumber = 1; unknownParametersNumber < 50; unknownParametersNumber++)
             {
-                foreach (var algorithm in algorithms)
+                foreach (var function in MinimizedFunction.GetTestMinimizedFunctions(unknownParametersNumber))
                 {
-                    Console.WriteLine($"Optimising {function.Name} with {algorithm.Name}");
+                    foreach (var algorithm in algorithms)
+                    {
+                        Console.WriteLine($"Optimising {function.Name} with {algorithm.Name}");
 
-                    var watch = System.Diagnostics.Stopwatch.StartNew();
-                    var result = algorithm.Solve(function.TargetFunction);
-                    watch.Stop();
+                        var watch = System.Diagnostics.Stopwatch.StartNew();
+                        var result = algorithm.Solve(function, numberOfIterations);
+                        watch.Stop();
 
-                    Console.WriteLine($"Minimum: {result}");
-                    Console.WriteLine($"Execution Time: {watch.ElapsedMilliseconds} ms\n");
+                        file.WriteLine($"{function.Name}, {algorithm.Name}, {numberOfIterations}, {unknownParametersNumber}, {result}, {watch.ElapsedMilliseconds}");
+                    }
                 }
             }
+
+            file.Flush();
+        }
+
+        static StreamWriter GetFile()
+        {
+            var fileNumber = 0;
+
+            Directory.CreateDirectory("tests");
+
+            while (true)
+            {
+                var path = $"tests/test_{fileNumber}.csv";
+
+                if (!File.Exists(path))
+                {
+                    return File.CreateText(path);
+                }
+
+                fileNumber++;
+            }
+
         }
     }
 }

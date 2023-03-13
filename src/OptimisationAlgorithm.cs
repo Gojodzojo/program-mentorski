@@ -2,7 +2,7 @@ namespace AlgoBenchmark
 {
     public interface OptimizationAlgorithm
     {
-        double Solve(TargetFunctionType TargetFunction);
+        double Solve(MinimizedFunction minimizedFunction, int iterations);
         string Name { get; }
         // void SaveStartPoputation();
         // void SaveStateOfAlghoritm();
