@@ -5,19 +5,19 @@ namespace AlgoBenchmark
     class AntColonyOptimizationAlgorithm : OptimizationAlgorithm
     {
         // Number of ants in population
-        int M = 100;
+        public int M = 100;
 
         // Number of pheromone spots
-        int L = 10;
+        public int L = 10;
 
         // ξ
-        double ksi = 1;
+        public double ksi = 1;
 
-        double q = 0.9;
+        public double q = 0.9;
 
         public string Name
         {
-            get => "Ant Colony Optimization Algorithm";
+            get => "Ant Colony Optimization";
         }
 
         public double Solve(MinimizedFunction minimizedFunction, int iterations)

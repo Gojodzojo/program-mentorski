@@ -10,9 +10,10 @@ namespace AlgoBenchmark
 
         static OptimizationAlgorithm[] GetOptimisationAlgorithms()
         {
-            return new[]
+            return new OptimizationAlgorithm[]
             {
-                new AntColonyOptimizationAlgorithm()
+                new AntColonyOptimizationAlgorithm(),
+                new GreyWolfOptimizer(),
             };
         }
     }

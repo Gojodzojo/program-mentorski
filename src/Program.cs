@@ -12,7 +12,7 @@ namespace AlgoBenchmark
             var file = GetFile();
             file.WriteLine("Minimized function, Optimization algorithm, Number of iterations, Number of unknown parameters, Result, Time[ms]");
 
-            for (int unknownParametersNumber = 1; unknownParametersNumber < 50; unknownParametersNumber++)
+            for (int unknownParametersNumber = 1; unknownParametersNumber <= 5; unknownParametersNumber++)
             {
                 foreach (var function in MinimizedFunction.GetTestMinimizedFunctions(unknownParametersNumber))
                 {
