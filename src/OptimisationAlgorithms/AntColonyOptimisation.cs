@@ -2,49 +2,177 @@ using MathNet.Numerics.Distributions;
 
 namespace AlgoBenchmark
 {
-    class AntColonyOptimizationAlgorithm : OptimizationAlgorithm
+    class AntColonyOptimization : IOptimizationAlgorithm
     {
         // Number of ants in population
-        public int M = 100;
+        private int M;
 
         // Number of pheromone spots
-        public int L = 10;
+        private int L;
 
         // ξ
-        public double ksi = 1;
+        private double ksi;
 
-        public double q = 0.9;
+        private double q;
+
+        // Pheromone spots
+        private PheromoneSpot[] T;
+
+        private Random rnd = new Random();
+        private FitnessFunctionType FitnessFunction;
+
+        private int TargetIterations;
+
+        private int CurrentIteration;
+
+        public int NumberOfEvaluationFitnessFunction { get; private set; }
+
+        public long Time { get; private set; }
+
+        public const string DefaultStatePath = "state/ACO.csv";
 
         public string Name
         {
             get => "Ant Colony Optimization";
         }
 
-        public double Solve(MinimizedFunction minimizedFunction, int iterations)
+        public double[] XBest
         {
-            // Pheromone spots
-            var T = new PheromoneSpot[L + M];
-            Random rnd = new Random();
+            get
+            {
+                this.SortPopulation();
+                return T[0].x;
+            }
+        }
+
+        public double FBest
+        {
+            get
+            {
+                this.SortPopulation();
+                return T[0].result;
+            }
+        }
+
+        // Create new instance of object from scratch
+        public AntColonyOptimization(FitnessFunctionType fitnessFunction, int population, int targetIterations, int L = 10, double ksi = 1, double q = 0.9)
+        {
+            this.FitnessFunction = fitnessFunction;
+            this.M = population;
+            this.TargetIterations = targetIterations;
+            this.L = L;
+            this.ksi = ksi;
+            this.q = q;
+            this.Time = 0;
+            this.CurrentIteration = 0;
+            this.NumberOfEvaluationFitnessFunction = 0;
+            this.T = new PheromoneSpot[L + M];
 
             for (int i = 0; i < L + M; i++)
             {
-                T[i].x = new double[minimizedFunction.UnknownParametersNumber];
+                T[i].x = new double[fitnessFunction.Dimensions];
 
-                for (int j = 0; j < minimizedFunction.UnknownParametersNumber; j++)
+                for (int j = 0; j < fitnessFunction.Dimensions; j++)
                 {
-                    T[i].x[j] = minimizedFunction.MinCoordinateVal + rnd.NextDouble() * (minimizedFunction.MaxCoordinateVal - minimizedFunction.MinCoordinateVal);
+                    T[i].x[j] = fitnessFunction.MinCoordinates[j] + rnd.NextDouble() * (fitnessFunction.MaxCoordinates[j] - fitnessFunction.MinCoordinates[j]);
                 }
             }
+        }
 
+        // Create new instance of object based on state file
+        public AntColonyOptimization(string filePath = AntColonyOptimization.DefaultStatePath)
+        {
+            var file = File.OpenText(filePath);
+            file.ReadLine();
+            var metadata = file.ReadLine().Split(';');
 
-            for (int a = 0; a < iterations; a++)
+            var functionName = metadata[0];
+            var dimensions = int.Parse(metadata[1]);
+            this.FitnessFunction = FitnessFunctionType.FromParameters(functionName, dimensions);
+            this.M = int.Parse(metadata[2]);
+            this.TargetIterations = int.Parse(metadata[3]);
+            this.CurrentIteration = int.Parse(metadata[4]);
+            this.NumberOfEvaluationFitnessFunction = int.Parse(metadata[5]);
+            this.Time = long.Parse(metadata[6]);
+            this.L = int.Parse(metadata[7]);
+            this.ksi = double.Parse(metadata[8]);
+            this.q = double.Parse(metadata[9]);
+            this.T = new PheromoneSpot[L + M];
+
+            file.ReadLine();    // Empty line
+            file.ReadLine();    // X headers
+
+            for (int i = 0; i < M + L; i++)
             {
+                var xValues = file.ReadLine().Split(';');
+                T[i].x = new double[FitnessFunction.Dimensions];
+
+                for (int j = 0; j < FitnessFunction.Dimensions; j++)
+                {
+                    T[i].x[j] = double.Parse(xValues[j]);
+                }
+            }
+        }
+
+        public void SaveToFileStateOfAlghoritm()
+        {
+            bool shouldExit = false;
+
+            ConsoleCancelEventHandler preventExit = (sender, e) =>
+            {
+                shouldExit = true;
+                e.Cancel = true;
+            };
+
+            Console.CancelKeyPress += preventExit;
+
+            Directory.CreateDirectory("state");
+            var file = File.CreateText(AntColonyOptimization.DefaultStatePath);
+
+            file.WriteLine("fitnessFunction Name; fitnessFunction Dimensions; M; TargetIterations; CurrentIteration; NumberOfEvaluationFitnessFunction; Time; L; ksi; q;");
+
+            file.WriteLine($"{FitnessFunction.Name}; {FitnessFunction.Dimensions}; {M}; {TargetIterations}; {CurrentIteration}; {NumberOfEvaluationFitnessFunction}; {Time}; {L}; {ksi}; {q};");
+
+            file.WriteLine();
+
+            for (int i = 0; i < L + M; i++)
+            {
+                file.Write($"x{i}; ");
+            }
+
+            file.WriteLine();
+
+            for (int i = 0; i < L + M; i++)
+            {
+                foreach (var x in T[i].x)
+                {
+                    file.Write($"{x}; ");
+                }
+                file.WriteLine();
+            }
+
+            file.Close();
+            if (shouldExit) System.Environment.Exit(0);
+            Console.CancelKeyPress -= preventExit;
+        }
+
+        private void SortPopulation()
+        {
+            Array.Sort(T, (a, b) => a.result.CompareTo(b.result));
+        }
+
+        public double Solve()
+        {
+            for (; CurrentIteration < TargetIterations; CurrentIteration++)
+            {
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+
                 for (int i = 0; i < L + M; i++)
                 {
-                    T[i].result = minimizedFunction.TargetFunction(T[i].x);
+                    T[i].result = CalculateFitnessFunction(T[i].x);
                 }
 
-                Array.Sort(T, (a, b) => a.result.CompareTo(b.result));
+                this.SortPopulation();
 
                 var omegas = new double[L];
                 double omega_acc = 0;
@@ -78,7 +206,7 @@ namespace AlgoBenchmark
                         }
                     }
 
-                    for (int j = 0; j < minimizedFunction.UnknownParametersNumber; j++)
+                    for (int j = 0; j < FitnessFunction.Dimensions; j++)
                     {
                         // μ
                         double mu = T[spot_index].x[j];
@@ -93,22 +221,28 @@ namespace AlgoBenchmark
 
                         double num = Normal.Sample(mu, sigma);
 
-                        if (num < minimizedFunction.MinCoordinateVal)
-                            num = minimizedFunction.MinCoordinateVal;
-                        else if (num > minimizedFunction.MaxCoordinateVal)
-                            num = minimizedFunction.MaxCoordinateVal;
+                        if (num < FitnessFunction.MinCoordinates[j])
+                            num = FitnessFunction.MinCoordinates[j];
+                        else if (num > FitnessFunction.MaxCoordinates[j])
+                            num = FitnessFunction.MaxCoordinates[j];
 
                         T[L + i].x[j] = num;
                     }
-
-
                 }
+
+                watch.Stop();
+                this.Time += watch.ElapsedMilliseconds;
+                SaveToFileStateOfAlghoritm();
             }
 
-            Array.Sort(T, (a, b) => a.result.CompareTo(b.result));
+            File.Delete(DefaultStatePath);
+            return FBest;
+        }
 
-            return T[0].result;
-
+        private double CalculateFitnessFunction(double[] args)
+        {
+            NumberOfEvaluationFitnessFunction++;
+            return FitnessFunction.Fn(args);
         }
     }
 

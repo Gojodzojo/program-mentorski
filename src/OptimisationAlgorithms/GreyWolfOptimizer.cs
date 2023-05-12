@@ -1,112 +1,225 @@
-using MathNet.Numerics.Distributions;
-
 namespace AlgoBenchmark
 {
-    class GreyWolfOptimizer : OptimizationAlgorithm
+    class GreyWolfOptimizer : IOptimizationAlgorithm
     {
-        // Number of wolves in population
-        public int population = 20;
+        // Number of Wolves in population
+        public int Population;
+        private double[][] Wolves;
+        private Random rnd = new Random();
+        private FitnessFunctionType FitnessFunction;
+        private int Iterations;
+        private int TargetIterations;
+        private int CurrentIteration;
+        public int NumberOfEvaluationFitnessFunction { get; private set; }
+        public long Time { get; private set; }
+        public const string DefaultStatePath = "state/GWO.csv";
 
         public string Name
         {
             get => "Grey Wolf Optimizer";
         }
 
-        public double Solve(MinimizedFunction minimizedFunction, int iterations)
+        public double[] XBest
         {
-            int targetFunctionCalls = 0;
-            TargetFunctionType targetFunction = (args) =>
+            get
             {
-                targetFunctionCalls++;
-                return minimizedFunction.TargetFunction(args);
-            };
+                double bestResult = FitnessFunction.Fn(Wolves[0]);
+                int bestIndex = 0;
 
-            var wolves = GenerateWolves(minimizedFunction);
-
-            for (int i = 0; i < iterations; i++)
-            {
-                double a = 2.0 - i * (2.0 / iterations);
-                (var alphaPosition, var betaPosition, var deltaPosition) = GetAlphaBetaDelta(wolves, minimizedFunction, targetFunction);
-
-                for (int wolfIndex = 0; wolfIndex < population; wolfIndex++)
+                for (int i = 1; i < Population; i++)
                 {
-                    for (int parameterIndex = 0; parameterIndex < minimizedFunction.UnknownParametersNumber; parameterIndex++)
-                    {
-                        double X1 = GetXValue(a, alphaPosition[parameterIndex], wolves[wolfIndex][parameterIndex]);
-                        double X2 = GetXValue(a, betaPosition[parameterIndex], wolves[wolfIndex][parameterIndex]);
-                        double X3 = GetXValue(a, deltaPosition[parameterIndex], wolves[wolfIndex][parameterIndex]);
+                    double result = FitnessFunction.Fn(Wolves[i]);
 
-                        wolves[wolfIndex][parameterIndex] = (X1 + X2 + X3) / 3;
+                    if (result < bestResult)
+                    {
+                        bestResult = result;
+                        bestIndex = i;
                     }
                 }
+
+                return Wolves[bestIndex];
             }
-
-            double bestResult = targetFunction(wolves[0]);
-
-            for (int i = 1; i < population; i++)
-            {
-                double result = targetFunction(wolves[i]);
-
-                if (result < bestResult)
-                {
-                    bestResult = result;
-                }
-            }
-
-            return bestResult;
         }
 
-        public double[][] GenerateWolves(MinimizedFunction minimizedFunction)
+        public double FBest
         {
-            // Wolves and their positions
-            var wolves = new double[population][];
-            Random rnd = new Random();
-
-            for (int i = 0; i < population; i++)
+            get
             {
-                wolves[i] = new double[minimizedFunction.UnknownParametersNumber];
+                double bestResult = FitnessFunction.Fn(Wolves[0]);
 
-                for (int j = 0; j < minimizedFunction.UnknownParametersNumber; j++)
+                for (int i = 1; i < Population; i++)
                 {
-                    wolves[i][j] = minimizedFunction.MinCoordinateVal + rnd.NextDouble() * (minimizedFunction.MaxCoordinateVal - minimizedFunction.MinCoordinateVal);
-                }
-            }
+                    double result = FitnessFunction.Fn(Wolves[i]);
 
-            return wolves;
+                    if (result < bestResult)
+                    {
+                        bestResult = result;
+                    }
+                }
+
+                return bestResult;
+            }
         }
 
-        public (double[], double[], double[]) GetAlphaBetaDelta(double[][] wolves, MinimizedFunction minimizedFunction, TargetFunctionType targetFunction)
+        // Create new instance of object from scratch
+        public GreyWolfOptimizer(FitnessFunctionType fitnessFunction, int population, int targetIterations)
         {
-            double firstResult = targetFunction(wolves[0]);
+            this.FitnessFunction = fitnessFunction;
+            this.Population = population;
+            this.TargetIterations = targetIterations;
+            this.Time = 0;
+            this.CurrentIteration = 0;
+            this.NumberOfEvaluationFitnessFunction = 0;
+            this.Wolves = new double[Population][];
 
-            double[] alphaPosition = wolves[0], betaPosition = wolves[0], deltaPosition = wolves[0];
+            for (int i = 0; i < Population; i++)
+            {
+                Wolves[i] = new double[fitnessFunction.Dimensions];
+
+                for (int j = 0; j < fitnessFunction.Dimensions; j++)
+                {
+                    Wolves[i][j] = fitnessFunction.MinCoordinates[j] + rnd.NextDouble() * (fitnessFunction.MaxCoordinates[j] - fitnessFunction.MinCoordinates[j]);
+                }
+            }
+        }
+
+        // Create new instance of object based on state file
+        public GreyWolfOptimizer(string filePath = GreyWolfOptimizer.DefaultStatePath)
+        {
+            var file = File.OpenText(filePath);
+            file.ReadLine();    // Metadata headers
+            var metadata = file.ReadLine().Split(';');
+
+            var functionName = metadata[0];
+            var dimensions = int.Parse(metadata[1]);
+            this.FitnessFunction = AlgoBenchmark.FitnessFunctionType.FromParameters(functionName, dimensions);
+            this.Population = int.Parse(metadata[2]);
+            this.TargetIterations = int.Parse(metadata[3]);
+            this.CurrentIteration = int.Parse(metadata[4]);
+            this.NumberOfEvaluationFitnessFunction = int.Parse(metadata[5]);
+            this.Time = long.Parse(metadata[6]);
+            this.Wolves = new double[Population][];
+
+            file.ReadLine();    // Empty line
+            file.ReadLine();    // X headers
+
+            for (int i = 0; i < Population; i++)
+            {
+                var line = file.ReadLine().Split(';');
+                Wolves[i] = new double[FitnessFunction.Dimensions];
+
+                for (int j = 0; j < FitnessFunction.Dimensions; j++)
+                {
+                    Wolves[i][j] = double.Parse(line[j]);
+                }
+            }
+        }
+
+        public void SaveToFileStateOfAlghoritm()
+        {
+            bool shouldExit = false;
+
+            ConsoleCancelEventHandler preventExit = (sender, e) =>
+            {
+                shouldExit = true;
+                e.Cancel = true;
+            };
+
+            Console.CancelKeyPress += preventExit;
+
+            Directory.CreateDirectory("state");
+            var file = File.CreateText(GreyWolfOptimizer.DefaultStatePath);
+
+            file.WriteLine("fitnessFunction Name; fitnessFunction Dimensions; Population; TargetIterations; CurrentIteration; NumberOfEvaluationFitnessFunction; Time;");
+            file.WriteLine($"{FitnessFunction.Name}; {FitnessFunction.Dimensions}; {Population}; {TargetIterations}; {CurrentIteration}; {NumberOfEvaluationFitnessFunction}; {Time};");
+
+            file.WriteLine();
+
+            for (int i = 0; i < Population; i++)
+            {
+                file.Write($"x{i}; ");
+            }
+
+            file.WriteLine();
+
+            for (int i = 0; i < Population; i++)
+            {
+                foreach (var x in Wolves[i])
+                {
+                    file.Write($"{x}; ");
+                }
+                file.WriteLine();
+            }
+
+            file.Close();
+            if (shouldExit) System.Environment.Exit(0);
+            Console.CancelKeyPress -= preventExit;
+        }
+
+        public double Solve()
+        {
+            for (; CurrentIteration < TargetIterations; CurrentIteration++)
+            {
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+
+                double a = 2.0 - CurrentIteration * (2.0 / TargetIterations);
+                (var alphaPosition, var betaPosition, var deltaPosition) = GetAlphaBetaDelta();
+
+                for (int wolfIndex = 0; wolfIndex < Population; wolfIndex++)
+                {
+                    for (int parameterIndex = 0; parameterIndex < FitnessFunction.Dimensions; parameterIndex++)
+                    {
+                        double X1 = GetXValue(a, alphaPosition[parameterIndex], Wolves[wolfIndex][parameterIndex]);
+                        double X2 = GetXValue(a, betaPosition[parameterIndex], Wolves[wolfIndex][parameterIndex]);
+                        double X3 = GetXValue(a, deltaPosition[parameterIndex], Wolves[wolfIndex][parameterIndex]);
+
+                        Wolves[wolfIndex][parameterIndex] = (X1 + X2 + X3) / 3;
+                    }
+                }
+
+                watch.Stop();
+                this.Time += watch.ElapsedMilliseconds;
+                SaveToFileStateOfAlghoritm();
+            }
+
+            // Getting FBest in return statement requires calling FitnessFunction for each wolf
+            NumberOfEvaluationFitnessFunction += Population;
+            File.Delete(DefaultStatePath);
+            return FBest;
+        }
+
+        private (double[], double[], double[]) GetAlphaBetaDelta()
+        {
+            double firstResult = CalculateFitnessFunction(Wolves[0]);
+
+            double[] alphaPosition = Wolves[0], betaPosition = Wolves[0], deltaPosition = Wolves[0];
             double alphaResult = firstResult, betaResult = firstResult, deltaResult = firstResult;
 
-            for (int i = 1; i < population; i++)
+            for (int i = 1; i < Population; i++)
             {
-                double result = targetFunction(wolves[i]);
+                double result = CalculateFitnessFunction(Wolves[i]);
 
                 if (result < alphaResult)
                 {
                     (deltaResult, deltaPosition) = (betaResult, betaPosition);
                     (betaResult, betaPosition) = (alphaResult, alphaPosition);
-                    (alphaResult, alphaPosition) = (result, wolves[i]);
+                    (alphaResult, alphaPosition) = (result, Wolves[i]);
                 }
                 else if (result < betaResult)
                 {
                     (deltaResult, deltaPosition) = (betaResult, betaPosition);
-                    (betaResult, betaPosition) = (result, wolves[i]);
+                    (betaResult, betaPosition) = (result, Wolves[i]);
                 }
                 else if (result < deltaResult)
                 {
-                    (deltaResult, deltaPosition) = (result, wolves[i]);
+                    (deltaResult, deltaPosition) = (result, Wolves[i]);
                 }
             }
 
             return (alphaPosition, betaPosition, deltaPosition);
         }
 
-        public double GetXValue(double a, double posP, double pos)
+        private double GetXValue(double a, double posP, double pos)
         {
             Random rnd = new Random();
             double r1 = rnd.NextDouble();
@@ -117,6 +230,12 @@ namespace AlgoBenchmark
 
             double D = Math.Abs(C1 * posP - pos); //Equation (3.5)-part 1
             return posP - A1 * D; //Equation (3.6)-part 1
+        }
+
+        private double CalculateFitnessFunction(double[] args)
+        {
+            NumberOfEvaluationFitnessFunction++;
+            return FitnessFunction.Fn(args);
         }
     }
 }

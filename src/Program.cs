@@ -6,50 +6,56 @@ namespace AlgoBenchmark
     {
         public static void Main(string[] args)
         {
-            var numberOfIterations = 100;
-            var algorithms = OptimizationAlgorithm.GetOptimisationAlgorithms();
-
-            var file = GetFile();
-            file.WriteLine("Minimized function, Optimization algorithm, Number of iterations, Number of unknown parameters, Result, Time[ms]");
-
-            for (int unknownParametersNumber = 1; unknownParametersNumber <= 5; unknownParametersNumber++)
+            if (args[0] == "test")
             {
-                foreach (var function in MinimizedFunction.GetTestMinimizedFunctions(unknownParametersNumber))
-                {
-                    foreach (var algorithm in algorithms)
-                    {
-                        Console.WriteLine($"Optimising {function.Name} with {algorithm.Name}");
-
-                        var watch = System.Diagnostics.Stopwatch.StartNew();
-                        var result = algorithm.Solve(function, numberOfIterations);
-                        watch.Stop();
-
-                        file.WriteLine($"{function.Name}, {algorithm.Name}, {numberOfIterations}, {unknownParametersNumber}, {result}, {watch.ElapsedMilliseconds}");
-                    }
-                }
+                test(args);
             }
-
-            file.Flush();
+            else if (args[0] == "resume")
+            {
+                resume(args);
+            }
+            else
+            {
+                Console.WriteLine("Unknown mode");
+            }
         }
 
-        static StreamWriter GetFile()
+        static void test(string[] args)
         {
-            var fileNumber = 0;
+            string algorithName = args[1];
+            string fitnessFunctionName = args[2];
+            int dimensions = int.Parse(args[3]);
+            int population = int.Parse(args[4]);
+            int iterations = int.Parse(args[5]);
 
-            Directory.CreateDirectory("tests");
+            var fitnessFunction = FitnessFunctionType.FromParameters(fitnessFunctionName, dimensions);
+            var algorithm = IOptimizationAlgorithm.FromParameters(algorithName, fitnessFunction, population, iterations);
+            var result = algorithm.Solve();
+            algorithm.SaveResult();
+        }
 
-            while (true)
+        static void resume(string[] args)
+        {
+            if (File.Exists(AntColonyOptimization.DefaultStatePath))
             {
-                var path = $"tests/test_{fileNumber}.csv";
-
-                if (!File.Exists(path))
-                {
-                    return File.CreateText(path);
-                }
-
-                fileNumber++;
+                IOptimizationAlgorithm algorithm = new AntColonyOptimization();
+                var result = algorithm.Solve();
+                algorithm.SaveResult();
             }
 
+            if (File.Exists(GreyWolfOptimizer.DefaultStatePath))
+            {
+                IOptimizationAlgorithm algorithm = new GreyWolfOptimizer();
+                var result = algorithm.Solve();
+                algorithm.SaveResult();
+            }
+
+            if (File.Exists(EquilibriumOptimizer.DefaultStatePath))
+            {
+                IOptimizationAlgorithm algorithm = new EquilibriumOptimizer();
+                var result = algorithm.Solve();
+                algorithm.SaveResult();
+            }
         }
     }
 }
