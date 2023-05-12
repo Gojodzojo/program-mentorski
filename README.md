@@ -19,6 +19,7 @@ Avaliable fitness functions:
 * Rastrigin Function
 * Sphere Function
 * Unknown Function
+* Eggholder function
 
 If the program was shut down during computations, you can resume its operation with the following command;
 ```

@@ -106,6 +106,16 @@ namespace AlgoBenchmark
                         suma += Math.Abs(x[i] * Math.Sin(x[i]) + 0.1 * x[i]);
                         return suma;
                     }
+                },
+                new FitnessFunctionType
+                {
+                    Name = "Eggholder function",
+                    MinCoordinates = new double[] {-512, -512},
+                    MaxCoordinates = new double[] {512, 512},
+                    Dimensions = 2,
+                    Fn = (double[] x) => {
+                        return -(x[1] + 47) * Math.Sin(Math.Sqrt(Math.Abs((x[0]/2) + (x[1] + 47)))) -x[0]* Math.Sin(Math.Sqrt(Math.Abs(x[0] + (x[1] + 47))));
+                    }
                 }
             };
         }
