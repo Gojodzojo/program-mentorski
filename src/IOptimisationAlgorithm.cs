@@ -18,8 +18,25 @@ namespace AlgoBenchmark
         void SaveResult()
         {
             var file = GetFile();
-            file.WriteLine("Optimization algorithm; NumberOfEvaluationFitnessFunction; Result; Number Of Evaluation Fitness Function; Time[ms]");
-            file.WriteLine($"{Name}; {NumberOfEvaluationFitnessFunction}; {FBest}; {NumberOfEvaluationFitnessFunction}; {Time}");
+            file.WriteLine("Optimization algorithm; NumberOfEvaluationFitnessFunction; Result; Time[ms]");
+            file.WriteLine($"{Name}; {NumberOfEvaluationFitnessFunction}; {FBest}; {Time}");
+
+            file.WriteLine();
+
+            var position = XBest;
+
+            for (int i = 0; i < position.Length; i++)
+            {
+                file.Write($"x{i}; ");
+            }
+
+            file.WriteLine();
+
+            foreach (var x in position)
+            {
+                file.Write($"{x}; ");
+            }
+
             file.Flush();
         }
 

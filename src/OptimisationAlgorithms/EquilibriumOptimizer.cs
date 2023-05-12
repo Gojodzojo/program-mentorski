@@ -177,7 +177,7 @@ namespace AlgoBenchmark
             file.WriteLine();
 
             file.Write("fitness; ");
-            for (int i = 0; i < Population; i++)
+            for (int i = 0; i < FitnessFunction.Dimensions; i++)
             {
                 file.Write($"x{i}; ");
             }
