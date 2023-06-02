@@ -52,9 +52,9 @@ namespace AlgoBenchmark
         int NumberOfEvaluationFitnessFunction { get; }
         long Time { get; }
 
-        static IOptimizationAlgorithm FromParameters(string name, FitnessFunctionType fitnessFunction, int population, int targetIterations)
+        static IOptimizationAlgorithm FromParameters(string name, FitnessFunctionType fitnessFunction, int population, int targetIterations, Dictionary<string, string> flags)
         {
-            foreach (var algorithm in GetOptimisationAlgorithms(fitnessFunction, population, targetIterations))
+            foreach (var algorithm in GetOptimisationAlgorithms(fitnessFunction, population, targetIterations, flags))
             {
                 if (name == algorithm.Name)
                 {
@@ -64,13 +64,13 @@ namespace AlgoBenchmark
 
             throw new Exception("Algorithm not found");
         }
-        static IOptimizationAlgorithm[] GetOptimisationAlgorithms(FitnessFunctionType fitnessFunction, int population, int targetIterations)
+        static IOptimizationAlgorithm[] GetOptimisationAlgorithms(FitnessFunctionType fitnessFunction, int population, int targetIterations, Dictionary<string, string> flags)
         {
             return new IOptimizationAlgorithm[]
             {
-                new AntColonyOptimization(fitnessFunction, population, targetIterations),
+                new AntColonyOptimization(fitnessFunction, population, targetIterations, flags),
                 new GreyWolfOptimizer(fitnessFunction, population, targetIterations),
-                new EquilibriumOptimizer(fitnessFunction, population, targetIterations),
+                new EquilibriumOptimizer(fitnessFunction, population, targetIterations, flags),
             };
         }
 

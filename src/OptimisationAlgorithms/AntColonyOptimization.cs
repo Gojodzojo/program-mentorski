@@ -55,14 +55,14 @@ namespace AlgoBenchmark
         }
 
         // Create new instance of object from scratch
-        public AntColonyOptimization(FitnessFunctionType fitnessFunction, int population, int targetIterations, int L = 10, double ksi = 1, double q = 0.9)
+        public AntColonyOptimization(FitnessFunctionType fitnessFunction, int population, int targetIterations, Dictionary<string, string> flags)
         {
             this.FitnessFunction = fitnessFunction;
             this.M = population;
             this.TargetIterations = targetIterations;
-            this.L = L;
-            this.ksi = ksi;
-            this.q = q;
+            this.L = int.Parse(flags.GetValueOrDefault("L", "10"));
+            this.ksi = double.Parse(flags.GetValueOrDefault("ksi", "1"));
+            this.q = double.Parse(flags.GetValueOrDefault("q", "0,9"));
             this.Time = 0;
             this.CurrentIteration = 0;
             this.NumberOfEvaluationFitnessFunction = 0;

@@ -65,7 +65,7 @@ namespace AlgoBenchmark
         }
 
         // Create new instance of object from scratch
-        public EquilibriumOptimizer(FitnessFunctionType fitnessFunction, int population, int targetIterations, double a1 = 2, double a2 = 1, double GP = 0.5)
+        public EquilibriumOptimizer(FitnessFunctionType fitnessFunction, int population, int targetIterations, Dictionary<string, string> flags)
         {
             this.FitnessFunction = fitnessFunction;
             this.Population = population;
@@ -73,9 +73,9 @@ namespace AlgoBenchmark
             this.Time = 0;
             this.CurrentIteration = 0;
             this.NumberOfEvaluationFitnessFunction = 0;
-            this.a1 = a1;
-            this.a2 = a2;
-            this.GP = GP;
+            this.a1 = double.Parse(flags.GetValueOrDefault("a1", "2"));
+            this.a2 = double.Parse(flags.GetValueOrDefault("a2", "1")); ;
+            this.GP = double.Parse(flags.GetValueOrDefault("GP", "0,5")); ;
             this.Particles = new Particle[Population];
 
             for (int i = 0; i < Population; i++)

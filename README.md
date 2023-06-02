@@ -1,16 +1,25 @@
 # Algo benchmark
 This program is used to test the performance and accuracy of different kinds of metaheuristic algorithms. 
 
-## Usage
-To test some algorithm you must type the following command: 
+## Before running 
+To compile this program you must first generate some files by running 
 ```
-dotnet run test "algorithm name" "fitness function name" dimensions population iterations
+dotnet restore
 ```
 
-Avaliable algorithms:
-* Ant Colony Optimization
-* Grey Wolf Optimizer
-* Equilibrium Optimizer
+## Usage
+### Test
+To test some algorithm you must type the following command: 
+```
+dotnet run test --algorithm "algorithm name" --fitness-function "fitness function name"
+```
+
+Flags:
+* --algorithm - used to specify tested algorithm
+* --fitness-function - this is the function for which you want to find the minimum
+* --dimensions - optional, default is 2
+* --population - optional, default is 30
+* --iterations - optional, default is 50
 
 Avaliable fitness functions:
 * Quadratic Function
@@ -21,6 +30,18 @@ Avaliable fitness functions:
 * Unknown Function
 * Eggholder function
 
+Avaliable algorithms and their flags:
+* Ant Colony Optimization
+	* --L - optional, default is 10
+	* --ksi - optional, default is 1
+	* --q - optional, default is 0,9
+* Grey Wolf Optimizer
+* Equilibrium Optimizer
+	* --a1 - optional, default is 2
+	* --a2 - optional, default is 1
+	* --GP - optional, default is 0,5
+
+### Resume
 If the program was shut down during computations, you can resume its operation with the following command;
 ```
 dotnet run resume

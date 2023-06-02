@@ -8,7 +8,8 @@ namespace AlgoBenchmark
         {
             if (args[0] == "test")
             {
-                test(args);
+                var flags = parseArgs(args);
+                test(flags);
             }
             else if (args[0] == "resume")
             {
@@ -20,16 +21,21 @@ namespace AlgoBenchmark
             }
         }
 
-        static void test(string[] args)
+        static void test(Dictionary<string, string> flags)
         {
-            string algorithName = args[1];
-            string fitnessFunctionName = args[2];
-            int dimensions = int.Parse(args[3]);
-            int population = int.Parse(args[4]);
-            int iterations = int.Parse(args[5]);
+            if (!flags.ContainsKey("algorithm") || !flags.ContainsKey("fitness-function"))
+            {
+                Console.WriteLine("algorithm and fitness-function must be specified");
+                return;
+            }
+            string algorithName = flags["algorithm"];
+            string fitnessFunctionName = flags["fitness-function"];
+            int dimensions = int.Parse(flags.GetValueOrDefault("dimensions", "2"));
+            int population = int.Parse(flags.GetValueOrDefault("population", "30"));
+            int iterations = int.Parse(flags.GetValueOrDefault("iterations", "50"));
 
             var fitnessFunction = FitnessFunctionType.FromParameters(fitnessFunctionName, dimensions);
-            var algorithm = IOptimizationAlgorithm.FromParameters(algorithName, fitnessFunction, population, iterations);
+            var algorithm = IOptimizationAlgorithm.FromParameters(algorithName, fitnessFunction, population, iterations, flags);
             var result = algorithm.Solve();
             algorithm.SaveResult();
         }
@@ -56,6 +62,19 @@ namespace AlgoBenchmark
                 var result = algorithm.Solve();
                 algorithm.SaveResult();
             }
+        }
+
+        static Dictionary<string, string> parseArgs(string[] args)
+        {
+            var flags = new Dictionary<string, string>();
+
+            for (int i = 1; i < args.Length; i += 2)
+            {
+                var flag = args[i].Substring(2);
+                flags[flag] = args[i + 1];
+            }
+
+            return flags;
         }
     }
 }
