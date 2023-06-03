@@ -11,7 +11,7 @@ dotnet restore
 ### Test
 To test some algorithm you must type the following command: 
 ```
-dotnet run test --algorithm "algorithm name" --fitness-function "fitness function name"
+dotnet run test --algorithm "algorithm name or acronym" --fitness-function "fitness function name"
 ```
 
 Flags:
@@ -31,12 +31,12 @@ Avaliable fitness functions:
 * Eggholder function
 
 Avaliable algorithms and their flags:
-* Ant Colony Optimization
+* Ant Colony Optimization (ACO)
 	* --L - optional, default is 10
 	* --ksi - optional, default is 1
 	* --q - optional, default is 0,9
-* Grey Wolf Optimizer
-* Equilibrium Optimizer
+* Grey Wolf Optimizer (GWO)
+* Equilibrium Optimizer (EQ)
 	* --a1 - optional, default is 2
 	* --a2 - optional, default is 1
 	* --GP - optional, default is 0,5

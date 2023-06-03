@@ -35,33 +35,33 @@ namespace AlgoBenchmark
             int iterations = int.Parse(flags.GetValueOrDefault("iterations", "50"));
 
             var fitnessFunction = FitnessFunctionType.FromParameters(fitnessFunctionName, dimensions);
-            var algorithm = IOptimizationAlgorithm.FromParameters(algorithName, fitnessFunction, population, iterations, flags);
+            var algorithm = Utils.FromParameters(algorithName, fitnessFunction, population, iterations, flags);
             var result = algorithm.Solve();
             algorithm.SaveResult();
         }
 
         static void resume(string[] args)
         {
-            if (File.Exists(AntColonyOptimization.DefaultStatePath))
-            {
-                IOptimizationAlgorithm algorithm = new AntColonyOptimization();
-                var result = algorithm.Solve();
-                algorithm.SaveResult();
-            }
+            // if (File.Exists(AntColonyOptimization.DefaultStatePath))
+            // {
+            //     IOptimizationAlgorithm algorithm = new AntColonyOptimization();
+            //     var result = algorithm.Solve();
+            //     algorithm.SaveResult();
+            // }
 
-            if (File.Exists(GreyWolfOptimizer.DefaultStatePath))
-            {
-                IOptimizationAlgorithm algorithm = new GreyWolfOptimizer();
-                var result = algorithm.Solve();
-                algorithm.SaveResult();
-            }
+            // if (File.Exists(GreyWolfOptimizer.DefaultStatePath))
+            // {
+            //     IOptimizationAlgorithm algorithm = new GreyWolfOptimizer();
+            //     var result = algorithm.Solve();
+            //     algorithm.SaveResult();
+            // }
 
-            if (File.Exists(EquilibriumOptimizer.DefaultStatePath))
-            {
-                IOptimizationAlgorithm algorithm = new EquilibriumOptimizer();
-                var result = algorithm.Solve();
-                algorithm.SaveResult();
-            }
+            // if (File.Exists(EquilibriumOptimizer.DefaultStatePath))
+            // {
+            //     IOptimizationAlgorithm algorithm = new EquilibriumOptimizer();
+            //     var result = algorithm.Solve();
+            //     algorithm.SaveResult();
+            // }
         }
 
         static Dictionary<string, string> parseArgs(string[] args)

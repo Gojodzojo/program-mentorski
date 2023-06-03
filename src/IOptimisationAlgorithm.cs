@@ -12,35 +12,13 @@ namespace AlgoBenchmark
 
         // Metoda wczytująca z pliku stan algorytmu (w odpowiednim formacie)
         // stan algorytmu: numer iteracji, populacja, liczba wywołań funkcji celu
-        // void LoadFromFileStateOfAlghoritm();
+        void LoadFromFileStateOfAlghoritm() { }
 
-        // Metoda zapisując do pliku wynik działania algorytmu wraz z paramterami
-        void SaveResult()
-        {
-            var file = GetFile();
-            file.WriteLine("Optimization algorithm; NumberOfEvaluationFitnessFunction; Result; Time[ms]");
-            file.WriteLine($"{Name}; {NumberOfEvaluationFitnessFunction}; {FBest}; {Time}");
-
-            file.WriteLine();
-
-            var position = XBest;
-
-            for (int i = 0; i < position.Length; i++)
-            {
-                file.Write($"x{i}; ");
-            }
-
-            file.WriteLine();
-
-            foreach (var x in position)
-            {
-                file.Write($"{x}; ");
-            }
-
-            file.Flush();
-        }
+        // Metoda zapisująca do pliku wynik działania algorytmu wraz z paramterami
+        void SaveResult();
 
         string Name { get; }
+        string Acronym { get; }
 
         // Właściowść zwracająca tablicę z najlepszym osobnikiem
         double[] XBest { get; }
@@ -51,42 +29,5 @@ namespace AlgoBenchmark
         // Właściwość zwracająca liczbę wywołań funkcji dopasowania (celu)
         int NumberOfEvaluationFitnessFunction { get; }
         long Time { get; }
-
-        static IOptimizationAlgorithm FromParameters(string name, FitnessFunctionType fitnessFunction, int population, int targetIterations, Dictionary<string, string> flags)
-        {
-            foreach (var algorithm in GetOptimisationAlgorithms(fitnessFunction, population, targetIterations, flags))
-            {
-                if (name == algorithm.Name)
-                {
-                    return algorithm;
-                }
-            }
-
-            throw new Exception("Algorithm not found");
-        }
-        static IOptimizationAlgorithm[] GetOptimisationAlgorithms(FitnessFunctionType fitnessFunction, int population, int targetIterations, Dictionary<string, string> flags)
-        {
-            return new IOptimizationAlgorithm[]
-            {
-                new AntColonyOptimization(fitnessFunction, population, targetIterations, flags),
-                new GreyWolfOptimizer(fitnessFunction, population, targetIterations),
-                new EquilibriumOptimizer(fitnessFunction, population, targetIterations, flags),
-            };
-        }
-
-        private static StreamWriter GetFile()
-        {
-            Directory.CreateDirectory("tests");
-
-            for (var fileNumber = 0; true; fileNumber++)
-            {
-                var path = $"tests/test_{fileNumber}.csv";
-
-                if (!File.Exists(path))
-                {
-                    return File.CreateText(path);
-                }
-            }
-        }
     }
 }

@@ -6,17 +6,21 @@ namespace AlgoBenchmark
         public int Population;
         private double[][] Wolves;
         private Random rnd = new Random();
+        private int testNumber;
         private FitnessFunctionType FitnessFunction;
-        private int Iterations;
         private int TargetIterations;
         private int CurrentIteration;
         public int NumberOfEvaluationFitnessFunction { get; private set; }
         public long Time { get; private set; }
-        public const string DefaultStatePath = "state/GWO.csv";
 
         public string Name
         {
             get => "Grey Wolf Optimizer";
+        }
+
+        public string Acronym
+        {
+            get => "GWO";
         }
 
         public double[] XBest
@@ -67,6 +71,7 @@ namespace AlgoBenchmark
             this.FitnessFunction = fitnessFunction;
             this.Population = population;
             this.TargetIterations = targetIterations;
+            this.testNumber = Utils.findTestNumber(Acronym);
             this.Time = 0;
             this.CurrentIteration = 0;
             this.NumberOfEvaluationFitnessFunction = 0;
@@ -84,9 +89,9 @@ namespace AlgoBenchmark
         }
 
         // Create new instance of object based on state file
-        public GreyWolfOptimizer(string filePath = GreyWolfOptimizer.DefaultStatePath)
+        public GreyWolfOptimizer(int testNumber)
         {
-            var file = File.OpenText(filePath);
+            var file = File.OpenText(Utils.getStateFilePath(Acronym, testNumber));
             file.ReadLine();    // Metadata headers
             var metadata = file.ReadLine().Split(';');
 
@@ -127,11 +132,20 @@ namespace AlgoBenchmark
 
             Console.CancelKeyPress += preventExit;
 
-            Directory.CreateDirectory("state");
-            var file = File.CreateText(GreyWolfOptimizer.DefaultStatePath);
+            SaveIterationState();
+            SaveLoadableState();
 
-            file.WriteLine("fitnessFunction Name; fitnessFunction Dimensions; Population; TargetIterations; CurrentIteration; NumberOfEvaluationFitnessFunction; Time;");
-            file.WriteLine($"{FitnessFunction.Name}; {FitnessFunction.Dimensions}; {Population}; {TargetIterations}; {CurrentIteration}; {NumberOfEvaluationFitnessFunction}; {Time};");
+            if (shouldExit) System.Environment.Exit(0);
+            Console.CancelKeyPress -= preventExit;
+        }
+
+        public void SaveLoadableState()
+        {
+            Directory.CreateDirectory("state");
+            var file = File.CreateText(Utils.getStateFilePath(Acronym, testNumber));
+
+            file.WriteLine("testNumber; fitnessFunction Name; fitnessFunction Dimensions; Population; TargetIterations; CurrentIteration; NumberOfEvaluationFitnessFunction; Time;");
+            file.WriteLine($"{testNumber}; {FitnessFunction.Name}; {FitnessFunction.Dimensions}; {Population}; {TargetIterations}; {CurrentIteration}; {NumberOfEvaluationFitnessFunction}; {Time};");
 
             file.WriteLine();
 
@@ -152,8 +166,28 @@ namespace AlgoBenchmark
             }
 
             file.Close();
-            if (shouldExit) System.Environment.Exit(0);
-            Console.CancelKeyPress -= preventExit;
+        }
+
+        private void SaveIterationState()
+        {
+            string iterationStateDirectory = Utils.getTestDirectory(Acronym, testNumber);
+            Directory.CreateDirectory(iterationStateDirectory);
+
+            var file = File.CreateText($"{iterationStateDirectory}/iteration_{CurrentIteration}.txt");
+
+            file.WriteLine($"{CurrentIteration} [numer iteracji]");
+            file.WriteLine($"{NumberOfEvaluationFitnessFunction} [liczba wywołań funkcji celu]");
+
+            for (int i = 0; i < Population; i++)
+            {
+                foreach (var x in Wolves[i])
+                {
+                    file.Write($"{x} ");
+                }
+                file.WriteLine();
+            }
+
+            file.Close();
         }
 
         public double Solve()
@@ -173,7 +207,14 @@ namespace AlgoBenchmark
                         double X2 = GetXValue(a, betaPosition[parameterIndex], Wolves[wolfIndex][parameterIndex]);
                         double X3 = GetXValue(a, deltaPosition[parameterIndex], Wolves[wolfIndex][parameterIndex]);
 
-                        Wolves[wolfIndex][parameterIndex] = (X1 + X2 + X3) / 3;
+                        double val = (X1 + X2 + X3) / 3;
+
+                        if (val < FitnessFunction.MinCoordinates[parameterIndex])
+                            val = FitnessFunction.MinCoordinates[parameterIndex];
+                        else if (val > FitnessFunction.MaxCoordinates[parameterIndex])
+                            val = FitnessFunction.MaxCoordinates[parameterIndex];
+
+                        Wolves[wolfIndex][parameterIndex] = val;
                     }
                 }
 
@@ -184,7 +225,7 @@ namespace AlgoBenchmark
 
             // Getting FBest in return statement requires calling FitnessFunction for each wolf
             NumberOfEvaluationFitnessFunction += Population;
-            File.Delete(DefaultStatePath);
+            File.Delete(Utils.getStateFilePath(Acronym, testNumber));
             return FBest;
         }
 
@@ -231,6 +272,25 @@ namespace AlgoBenchmark
             double D = Math.Abs(C1 * posP - pos); //Equation (3.5)-part 1
             return posP - A1 * D; //Equation (3.6)-part 1
         }
+
+        public void SaveResult()
+        {
+            var resultFile = File.CreateText(Utils.getResultFilePath(Acronym, testNumber));
+            resultFile.WriteLine($"{NumberOfEvaluationFitnessFunction} [liczba wywołań funkcji celu]");
+            resultFile.Write($"{FBest} ");
+
+            foreach (var x in XBest)
+            {
+                resultFile.Write($"{x} ");
+            }
+
+            resultFile.WriteLine("[najlepszy osobnik wraz z wartością funkcji celu]");
+            resultFile.WriteLine($"{Population} [populacja]");
+            resultFile.WriteLine($"{TargetIterations} [liczba iteracji]");
+
+            resultFile.Close();
+        }
+
 
         private double CalculateFitnessFunction(double[] args)
         {

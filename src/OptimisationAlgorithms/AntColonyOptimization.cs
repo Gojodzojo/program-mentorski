@@ -19,6 +19,7 @@ namespace AlgoBenchmark
         private PheromoneSpot[] T;
 
         private Random rnd = new Random();
+        private int testNumber;
         private FitnessFunctionType FitnessFunction;
 
         private int TargetIterations;
@@ -29,11 +30,14 @@ namespace AlgoBenchmark
 
         public long Time { get; private set; }
 
-        public const string DefaultStatePath = "state/ACO.csv";
-
         public string Name
         {
             get => "Ant Colony Optimization";
+        }
+
+        public string Acronym
+        {
+            get => "ACO";
         }
 
         public double[] XBest
@@ -63,6 +67,7 @@ namespace AlgoBenchmark
             this.L = int.Parse(flags.GetValueOrDefault("L", "10"));
             this.ksi = double.Parse(flags.GetValueOrDefault("ksi", "1"));
             this.q = double.Parse(flags.GetValueOrDefault("q", "0,9"));
+            this.testNumber = Utils.findTestNumber(Acronym);
             this.Time = 0;
             this.CurrentIteration = 0;
             this.NumberOfEvaluationFitnessFunction = 0;
@@ -80,23 +85,24 @@ namespace AlgoBenchmark
         }
 
         // Create new instance of object based on state file
-        public AntColonyOptimization(string filePath = AntColonyOptimization.DefaultStatePath)
+        public AntColonyOptimization(int testNumber)
         {
-            var file = File.OpenText(filePath);
+            var file = File.OpenText(Utils.getStateFilePath(Acronym, testNumber));
             file.ReadLine();
             var metadata = file.ReadLine().Split(';');
 
-            var functionName = metadata[0];
-            var dimensions = int.Parse(metadata[1]);
+            var functionName = metadata[1];
+            var dimensions = int.Parse(metadata[2]);
             this.FitnessFunction = FitnessFunctionType.FromParameters(functionName, dimensions);
-            this.M = int.Parse(metadata[2]);
-            this.TargetIterations = int.Parse(metadata[3]);
-            this.CurrentIteration = int.Parse(metadata[4]);
-            this.NumberOfEvaluationFitnessFunction = int.Parse(metadata[5]);
-            this.Time = long.Parse(metadata[6]);
-            this.L = int.Parse(metadata[7]);
-            this.ksi = double.Parse(metadata[8]);
-            this.q = double.Parse(metadata[9]);
+            this.testNumber = int.Parse(metadata[0]);
+            this.M = int.Parse(metadata[3]);
+            this.TargetIterations = int.Parse(metadata[4]);
+            this.CurrentIteration = int.Parse(metadata[5]);
+            this.NumberOfEvaluationFitnessFunction = int.Parse(metadata[6]);
+            this.Time = long.Parse(metadata[7]);
+            this.L = int.Parse(metadata[8]);
+            this.ksi = double.Parse(metadata[9]);
+            this.q = double.Parse(metadata[10]);
             this.T = new PheromoneSpot[L + M];
 
             file.ReadLine();    // Empty line
@@ -126,12 +132,42 @@ namespace AlgoBenchmark
 
             Console.CancelKeyPress += preventExit;
 
-            Directory.CreateDirectory("state");
-            var file = File.CreateText(AntColonyOptimization.DefaultStatePath);
+            SaveIterationState();
+            SaveLoadableState();
 
-            file.WriteLine("fitnessFunction Name; fitnessFunction Dimensions; M; TargetIterations; CurrentIteration; NumberOfEvaluationFitnessFunction; Time; L; ksi; q;");
+            if (shouldExit) System.Environment.Exit(0);
+            Console.CancelKeyPress -= preventExit;
+        }
 
-            file.WriteLine($"{FitnessFunction.Name}; {FitnessFunction.Dimensions}; {M}; {TargetIterations}; {CurrentIteration}; {NumberOfEvaluationFitnessFunction}; {Time}; {L}; {ksi}; {q};");
+        private void SaveIterationState()
+        {
+            string iterationStateDirectory = Utils.getTestDirectory(Acronym, testNumber);
+            Directory.CreateDirectory(iterationStateDirectory);
+
+            var file = File.CreateText($"{iterationStateDirectory}/iteration_{CurrentIteration}.txt");
+
+            file.WriteLine($"{CurrentIteration} [numer iteracji]");
+            file.WriteLine($"{NumberOfEvaluationFitnessFunction} [liczba wywołań funkcji celu]");
+
+            for (int i = 0; i < M; i++)
+            {
+                foreach (var x in T[i].x)
+                {
+                    file.Write($"{x} ");
+                }
+                file.WriteLine();
+            }
+
+            file.Close();
+        }
+
+        public void SaveLoadableState()
+        {
+            var file = File.CreateText(Utils.getStateFilePath(Acronym, testNumber));
+
+            file.WriteLine("testNumber; fitnessFunction Name; fitnessFunction Dimensions; M; TargetIterations; CurrentIteration; NumberOfEvaluationFitnessFunction; Time; L; ksi; q;");
+
+            file.WriteLine($"{testNumber}; {FitnessFunction.Name}; {FitnessFunction.Dimensions}; {M}; {TargetIterations}; {CurrentIteration}; {NumberOfEvaluationFitnessFunction}; {Time}; {L}; {ksi}; {q};");
 
             file.WriteLine();
 
@@ -152,8 +188,6 @@ namespace AlgoBenchmark
             }
 
             file.Close();
-            if (shouldExit) System.Environment.Exit(0);
-            Console.CancelKeyPress -= preventExit;
         }
 
         private void SortPopulation()
@@ -235,8 +269,29 @@ namespace AlgoBenchmark
                 SaveToFileStateOfAlghoritm();
             }
 
-            File.Delete(DefaultStatePath);
+            File.Delete(Utils.getStateFilePath(Acronym, testNumber));
             return FBest;
+        }
+
+        public void SaveResult()
+        {
+            var resultFile = File.CreateText(Utils.getResultFilePath(Acronym, testNumber));
+            resultFile.WriteLine($"{NumberOfEvaluationFitnessFunction} [liczba wywołań funkcji celu]");
+            resultFile.Write($"{FBest} ");
+
+            foreach (var x in XBest)
+            {
+                resultFile.Write($"{x} ");
+            }
+
+            resultFile.WriteLine("[najlepszy osobnik wraz z wartością funkcji celu]");
+            resultFile.WriteLine($"{M} [liczba mrówek]");
+            resultFile.WriteLine($"{L} [liczba plam]");
+            resultFile.WriteLine($"{TargetIterations} [liczba iteracji]");
+            resultFile.WriteLine($"{q} [parametr q]");
+            resultFile.WriteLine($"{ksi} [parametr ksi]");
+
+            resultFile.Close();
         }
 
         private double CalculateFitnessFunction(double[] args)
