@@ -119,7 +119,7 @@ namespace AlgoBenchmark
             file.ReadLine();    // Metadata headers
             var metadata = file.ReadLine().Split(';');
 
-            var functionName = metadata[1];
+            var functionName = metadata[1].Trim();
             var dimensions = int.Parse(metadata[2]);
             this.FitnessFunction = AlgoBenchmark.FitnessFunctionType.FromParameters(functionName, dimensions);
             this.testNumber = int.Parse(metadata[0]);
@@ -128,6 +128,9 @@ namespace AlgoBenchmark
             this.CurrentIteration = int.Parse(metadata[5]);
             this.NumberOfEvaluationFitnessFunction = int.Parse(metadata[6]);
             this.Time = long.Parse(metadata[7]);
+            this.a1 = double.Parse(metadata[8]);
+            this.a2 = double.Parse(metadata[9]);
+            this.GP = double.Parse(metadata[10]);
             this.Particles = new Particle[Population];
 
             file.ReadLine();    // Empty line
@@ -166,8 +169,8 @@ namespace AlgoBenchmark
         {
             var file = File.CreateText(Utils.getStateFilePath(Acronym, testNumber));
 
-            file.WriteLine("testNumber; fitnessFunction Name; fitnessFunction Dimensions; Population; TargetIterations; CurrentIteration; NumberOfEvaluationFitnessFunction; Time;");
-            file.WriteLine($"{testNumber}; {FitnessFunction.Name}; {FitnessFunction.Dimensions}; {Population}; {TargetIterations}; {CurrentIteration}; {NumberOfEvaluationFitnessFunction}; {Time};");
+            file.WriteLine("testNumber; fitnessFunction Name; fitnessFunction Dimensions; Population; TargetIterations; CurrentIteration; NumberOfEvaluationFitnessFunction; Time; a1; a2; GP");
+            file.WriteLine($"{testNumber}; {FitnessFunction.Name}; {FitnessFunction.Dimensions}; {Population}; {TargetIterations}; {CurrentIteration}; {NumberOfEvaluationFitnessFunction}; {Time}; {a1}; {a2}; {GP}");
 
             file.WriteLine();
 

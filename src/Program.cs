@@ -6,14 +6,15 @@ namespace AlgoBenchmark
     {
         public static void Main(string[] args)
         {
+            var flags = parseArgs(args);
+
             if (args[0] == "test")
             {
-                var flags = parseArgs(args);
                 test(flags);
             }
             else if (args[0] == "resume")
             {
-                resume(args);
+                resume(flags);
             }
             else
             {
@@ -40,8 +41,31 @@ namespace AlgoBenchmark
             algorithm.SaveResult();
         }
 
-        static void resume(string[] args)
+        static void resume(Dictionary<string, string> flags)
         {
+            int testNumber = int.Parse(flags["test"]);
+            IOptimizationAlgorithm algorithm;
+
+            if (flags["algorithm"] == "Ant Colony Optimization" || flags["algorithm"] == "ACO")
+            {
+                algorithm = new AntColonyOptimization(testNumber);
+            }
+            else if (flags["algorithm"] == "Grey Wolf Optimizer" || flags["algorithm"] == "GWO")
+            {
+                algorithm = new GreyWolfOptimizer(testNumber);
+            }
+            else if (flags["algorithm"] == "Equilibrium Optimizer" || flags["algorithm"] == "EO")
+            {
+                algorithm = new EquilibriumOptimizer(testNumber);
+            }
+            else
+            {
+                Console.WriteLine("Algorithm not found");
+                return;
+            }
+
+            var result = algorithm.Solve();
+            algorithm.SaveResult();
             // if (File.Exists(AntColonyOptimization.DefaultStatePath))
             // {
             //     IOptimizationAlgorithm algorithm = new AntColonyOptimization();

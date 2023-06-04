@@ -91,7 +91,7 @@ namespace AlgoBenchmark
             file.ReadLine();
             var metadata = file.ReadLine().Split(';');
 
-            var functionName = metadata[1];
+            var functionName = metadata[1].Trim();
             var dimensions = int.Parse(metadata[2]);
             this.FitnessFunction = FitnessFunctionType.FromParameters(functionName, dimensions);
             this.testNumber = int.Parse(metadata[0]);

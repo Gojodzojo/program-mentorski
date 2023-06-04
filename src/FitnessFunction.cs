@@ -30,16 +30,16 @@ namespace AlgoBenchmark
                 new FitnessFunctionType
                 {
                     Name = "Quadratic Function",
-                    MinCoordinates = FilledArray(dimensions, 100),
-                    MaxCoordinates = FilledArray(dimensions, -100),
+                    MinCoordinates = FilledArray(dimensions, -100),
+                    MaxCoordinates = FilledArray(dimensions, 100),
                     Dimensions = dimensions,
                     Fn = (double[] x) => x[0] * x[0],
                 },
                 new FitnessFunctionType
                 {
                     Name = "Bent Cigar",
-                    MinCoordinates = FilledArray(dimensions, 10),
-                    MaxCoordinates = FilledArray(dimensions, -10),
+                    MinCoordinates = FilledArray(dimensions, -10),
+                    MaxCoordinates = FilledArray(dimensions, 10),
                     Dimensions = dimensions,
                     Fn = (double[] x) => {
                         int n = x.Length;
@@ -52,8 +52,8 @@ namespace AlgoBenchmark
                 new FitnessFunctionType
                 {
                     Name = "Rosenbrock Function",
-                    MinCoordinates = FilledArray(dimensions, 10),
-                    MaxCoordinates = FilledArray(dimensions, -5),
+                    MinCoordinates = FilledArray(dimensions, -5),
+                    MaxCoordinates = FilledArray(dimensions, 10),
                     Dimensions = dimensions,
                     Fn = (double[] x) => {
                         int n = x.Length;
@@ -66,8 +66,8 @@ namespace AlgoBenchmark
                 new FitnessFunctionType
                 {
                     Name = "Rastrigin Function",
-                    MinCoordinates = FilledArray(dimensions, 5.12),
-                    MaxCoordinates = FilledArray(dimensions, -5.12),
+                    MinCoordinates = FilledArray(dimensions, -5.12),
+                    MaxCoordinates = FilledArray(dimensions, 5.12),
                     Dimensions = dimensions,
                     Fn = (double[] x) => {
                         int n = x.Length;
@@ -80,7 +80,7 @@ namespace AlgoBenchmark
                 new FitnessFunctionType
                 {
                     Name = "Sphere Function",
-                    MinCoordinates = FilledArray(dimensions, 10000),
+                    MinCoordinates = FilledArray(dimensions, -10000),
                     MaxCoordinates = FilledArray(dimensions, 10000),
                     Dimensions = dimensions,
                     Fn = (double[] x) => {
@@ -96,8 +96,8 @@ namespace AlgoBenchmark
                 new FitnessFunctionType
                 {
                     Name = "Unknown Function",
-                    MinCoordinates = FilledArray(dimensions, 10),
-                    MaxCoordinates = FilledArray(dimensions, -10),
+                    MinCoordinates = FilledArray(dimensions, -10),
+                    MaxCoordinates = FilledArray(dimensions, 10),
                     Dimensions = dimensions,
                     Fn = (double[] x) => {
                         int n = x.Length;

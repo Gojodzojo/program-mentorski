@@ -44,5 +44,5 @@ Avaliable algorithms and their flags:
 ### Resume
 If the program was shut down during computations, you can resume its operation with the following command;
 ```
-dotnet run resume
+dotnet run resume --algorithm "algorithm name or acronym" --test "test number"
 ```
