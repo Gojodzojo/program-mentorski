@@ -220,6 +220,7 @@ namespace AlgoBenchmark
 
                 watch.Stop();
                 this.Time += watch.ElapsedMilliseconds;
+                Array.Sort(Wolves, (a, b) => FitnessFunction.Fn(a).CompareTo(FitnessFunction.Fn(b)));
                 SaveToFileStateOfAlghoritm();
             }
 

@@ -266,6 +266,7 @@ namespace AlgoBenchmark
 
                 watch.Stop();
                 this.Time += watch.ElapsedMilliseconds;
+                SortPopulation();
                 SaveToFileStateOfAlghoritm();
             }
 

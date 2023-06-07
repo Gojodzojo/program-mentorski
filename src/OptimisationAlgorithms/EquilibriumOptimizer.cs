@@ -294,6 +294,7 @@ namespace AlgoBenchmark
 
                 watch.Stop();
                 this.Time += watch.ElapsedMilliseconds;
+                Array.Sort(Particles, (a, b) => a.fitness.CompareTo(b.fitness));
                 SaveToFileStateOfAlghoritm();
             }
 
