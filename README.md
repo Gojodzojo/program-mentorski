@@ -29,6 +29,7 @@ Avaliable fitness functions:
 * Sphere Function
 * Unknown Function
 * Eggholder function
+* TSFDE fractional boundary
 
 Avaliable algorithms and their flags:
 * Ant Colony Optimization (ACO)

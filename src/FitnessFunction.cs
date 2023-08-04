@@ -116,7 +116,8 @@ namespace AlgoBenchmark
                     Fn = (double[] x) => {
                         return -(x[1] + 47) * Math.Sin(Math.Sqrt(Math.Abs((x[0]/2) + (x[1] + 47)))) -x[0]* Math.Sin(Math.Sqrt(Math.Abs(x[0] + (x[1] + 47))));
                     }
-                }
+                },
+                TSFDE_fractional_boundary_fitness_function.GetFitnessFunction(dimensions)
             };
         }
 
