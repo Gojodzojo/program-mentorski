@@ -121,7 +121,7 @@ namespace AlgoBenchmark
             };
         }
 
-        static double[] FilledArray(int size, double value)
+        public static double[] FilledArray(int size, double value)
         {
             double[] a = new double[size];
             Array.Fill(a, value);

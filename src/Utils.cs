@@ -21,6 +21,7 @@ namespace AlgoBenchmark
                 new AntColonyOptimization(fitnessFunction, population, targetIterations, flags),
                 new GreyWolfOptimizer(fitnessFunction, population, targetIterations),
                 new EquilibriumOptimizer(fitnessFunction, population, targetIterations, flags),
+                new ChimpOptimizationAlgorithm(fitnessFunction, population, targetIterations, flags),
             };
         }
 
