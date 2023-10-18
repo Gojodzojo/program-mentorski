@@ -22,6 +22,7 @@ namespace AlgoBenchmark
                 new GreyWolfOptimizer(fitnessFunction, population, targetIterations),
                 new EquilibriumOptimizer(fitnessFunction, population, targetIterations, flags),
                 new ChimpOptimizationAlgorithm(fitnessFunction, population, targetIterations, flags),
+                new JellyfishSearchOptimizer(fitnessFunction, population, targetIterations, flags),
             };
         }
 

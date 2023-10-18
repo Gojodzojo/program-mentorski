@@ -165,6 +165,8 @@ namespace AlgoBenchmark
             C_pool = new double[][] { Ceq1, Ceq2, Ceq3, Ceq4, Ceq_ave };
         }
 
+        void LoadFromFileStateOfAlghoritm() { }
+
         private void SaveLoadableState()
         {
             var file = File.CreateText(Utils.getStateFilePath(Acronym, testNumber));
