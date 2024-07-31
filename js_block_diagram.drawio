@@ -1,0 +1,172 @@
+<mxfile host="65bd71144e">
+    <diagram id="HlIAlY2rxAViapxMu_FQ" name="Page-1">
+        <mxGraphModel dx="1468" dy="1126" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="880" pageHeight="1720" background="#ffffff" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="5" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontColor=#000000;strokeColor=#617FAB;targetPerimeterSpacing=0;strokeWidth=2;" parent="1" source="3" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="360" y="160" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="3" value="Start" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;fillColor=#DAE8FC;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="40" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;targetPerimeterSpacing=0;" parent="1" source="7" target="8" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="Set up the parameters of the algorithm" style="whiteSpace=wrap;html=1;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;fillColor=#DAE8FC;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="160" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;targetPerimeterSpacing=0;" parent="1" source="8" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="360.20000000000005" y="360" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="8" value="Initialize population using logistic chaotic map" style="whiteSpace=wrap;html=1;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;fillColor=#DAE8FC;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="260" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;targetPerimeterSpacing=0;" parent="1" source="11" target="12" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="Calculate the value of the fitness function for each agent" style="whiteSpace=wrap;html=1;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;fillColor=#DAE8FC;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="360" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="Record the fittest agent as X*" style="whiteSpace=wrap;html=1;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;fillColor=#DAE8FC;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="460" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;targetPerimeterSpacing=0;" parent="1" target="17" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="360" y="520" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="19" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;targetPerimeterSpacing=0;rounded=0;" parent="1" source="17" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="360" y="720" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="240" y="600"/>
+                            <mxPoint x="240" y="680"/>
+                            <mxPoint x="360" y="680"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="55" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;endArrow=classic;endFill=1;targetPerimeterSpacing=0;" parent="1" source="17" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="360" y="1500" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="840" y="600"/>
+                            <mxPoint x="840" y="1460"/>
+                            <mxPoint x="360" y="1460"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="17" value="for t in 1:Max&lt;sub&gt;iter&lt;br&gt;&lt;/sub&gt;for i in 1:n&lt;sub&gt;Pop&lt;/sub&gt;&lt;sub&gt;&lt;br&gt;&lt;/sub&gt;" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;fillColor=#DAE8FC;" parent="1" vertex="1">
+                    <mxGeometry x="280" y="560" width="160" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;targetPerimeterSpacing=0;" parent="1" source="24" target="25" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="24" value="Calculate time control c(t) using Eq. (31)" style="whiteSpace=wrap;html=1;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;fillColor=#DAE8FC;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="720" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;targetPerimeterSpacing=0;" parent="1" source="25" target="27" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;targetPerimeterSpacing=0;" parent="1" target="29" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="401.0000000000002" y="860" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="25" value="c(t) ≤ 0.5" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;fillColor=#DAE8FC;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="820" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;targetPerimeterSpacing=0;" parent="1" source="27" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="360" y="1120" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="140" y="1080"/>
+                            <mxPoint x="360" y="1080"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="27" value="Update position Xi using Eq. (26)" style="whiteSpace=wrap;html=1;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;fillColor=#DAE8FC;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="950" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;targetPerimeterSpacing=0;" parent="1" source="29" target="31" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;targetPerimeterSpacing=0;" parent="1" source="29" target="33" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="rand(0, 1) &amp;gt; (1 − c(t))" style="rhombus;whiteSpace=wrap;html=1;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;fillColor=#DAE8FC;" parent="1" vertex="1">
+                    <mxGeometry x="520" y="900" width="160" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;targetPerimeterSpacing=0;" parent="1" source="31" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="360" y="1120" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="31" value="Update position X&lt;sub&gt;i&lt;/sub&gt; using Eq. (27)" style="whiteSpace=wrap;html=1;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;fillColor=#DAE8FC;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="980" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;targetPerimeterSpacing=0;" parent="1" source="33" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="360" y="1120" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="33" value="Update position X&lt;sub&gt;i&lt;/sub&gt; using Eq. (28)" style="whiteSpace=wrap;html=1;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;fillColor=#DAE8FC;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="980" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="44" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;targetPerimeterSpacing=0;" parent="1" source="39" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="360" y="1320" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="39" value="Calculate the value of the fitness function for X&lt;sub&gt;i&lt;/sub&gt;" style="whiteSpace=wrap;html=1;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;fillColor=#DAE8FC;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="1220" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;targetPerimeterSpacing=0;" parent="1" source="40" target="39" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="40" value="Check boundary conditions using Eq. (33)" style="whiteSpace=wrap;html=1;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;fillColor=#DAE8FC;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="1120" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="51" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;targetPerimeterSpacing=0;endArrow=none;endFill=0;" parent="1" source="130" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="360" y="540" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="360" y="1420"/>
+                            <mxPoint x="40" y="1420"/>
+                            <mxPoint x="40" y="540"/>
+                        </Array>
+                        <mxPoint x="359" y="1640" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="59" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;endArrow=classic;endFill=1;targetPerimeterSpacing=0;" parent="1" source="57" target="58" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="57" value="Return X*" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;fillColor=#DAE8FC;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="1500" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="58" value="Stop" style="ellipse;whiteSpace=wrap;html=1;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;fillColor=#DAE8FC;" parent="1" vertex="1">
+                    <mxGeometry x="300" y="1600" width="120" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="65" value="Yes" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="830" width="40" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="66" value="No" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="420" y="830" width="40" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="67" value="Yes" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="480" y="910" width="40" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="68" value="No" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontColor=#000000;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="680" y="910" width="40" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="130" value="Update the fittest agent if needed" style="whiteSpace=wrap;html=1;strokeColor=#617FAB;strokeWidth=2;fontColor=#000000;fillColor=#DAE8FC;" vertex="1" parent="1">
+                    <mxGeometry x="300" y="1320" width="120" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
